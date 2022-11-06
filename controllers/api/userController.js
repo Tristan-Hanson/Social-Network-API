@@ -58,4 +58,30 @@ router.delete("/:id", async(req,res)=>{
   }
 });
 
+//Friend add route
+router.post("/:userId/friends/:friendId", async(req,res) =>{
+  try{
+      const ogUser = await User.findById(req.params.userId);
+      const newFriend = await User.findById(req.params.friendId);
+      ogUser.friends.push(newFriend);
+      const result = await ogUser.save();
+      res.json(result).status(200);
+  }catch(err){
+      res.json(err).status(400);
+  }
+});
+
+//Delete Friend
+router.delete("/:userId/friends/:friendId", async(req,res)=>{
+  try{
+      const ogUser = await User.findById(req.params.userId);
+      await ogUser.updateOne({$pull:{friends:{id:req.params.id}}});
+      const result = await ogUser.save();
+      res.json(result).status(200);
+  }catch(error){
+      res.json(err).status(400);
+      console.log(err)
+  }
+});
+
 module.exports = router;
