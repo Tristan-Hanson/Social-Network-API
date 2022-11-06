@@ -3,7 +3,6 @@ const reactionSchema = require('./Reaction');
 const Thought = require('./Thought');
 const thoughtSchema = require('./Thought')
 
-
 const userSchema = new Schema(
   {
     username: {
@@ -17,17 +16,15 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
-    thoughts: [
-      {
-        type: [Thought._id],
-      },
-    ],
-    friends:[
-      {
-        type: [this],
-      }
-    ]
+    thoughts: [{ type: Schema.Types.ObjectId, ref: "Thought" }],
+    friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
+  {
+    toJSON:{
+      virtual:true,
+    },
+    id:false,
+  }
 );
 userSchema.virtual('friendCount').get(function(){
   return this.friends.length;
@@ -36,3 +33,4 @@ userSchema.virtual('friendCount').get(function(){
 const User = model('user', userSchema);
 
 module.exports = User;
+
