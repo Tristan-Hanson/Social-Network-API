@@ -66,4 +66,35 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+//New Reaction
+router.post('/:thoughtId/reaction',async(req,res)=>{
+  try{
+    const newReaction =await Thought.findOneAndUpdate(
+    {_id:req.params.thoughtId},
+    {$push:{reactions:req.body}},
+    {new:true}
+    )
+    res.status(200).json(newReaction);
+  }catch(err){
+      console.log(err)
+      res.status(500).json(err);
+  }
+})
+
+//Delete Reaction
+router.delete('/:thoughtId/reaction/:reactionId',async(req,res)=>{
+  try{
+    const deleteReaction =await Thought.findOneAndUpdate(
+      {_id:req.params.thoughtId},
+      {$pull:{reactions:{reactionId: req.params._id}}},
+      {new:true}
+    
+    )
+    res.status(200).json(delFriend);
+  }catch(err){
+    console.log(err)
+    res.status(500).json(err);
+  }
+})
+
 module.exports = router;
