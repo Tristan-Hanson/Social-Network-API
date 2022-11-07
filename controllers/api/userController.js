@@ -74,11 +74,13 @@ router.post("/:userId/friends/:friendId", async(req,res) =>{
 //Delete Friend
 router.delete("/:userId/friends/:friendId", async(req,res)=>{
   try{
-      const ogUser = await User.findById(req.params.userId);
-      await ogUser.updateOne({$pull:{friends:{id:req.params.id}}});
-      const result = await ogUser.save();
+      const ogUser = await User.findOneAndUpdate(
+      {_id: req.params.userId},
+      {$pull:{friends:req.params.friendId}},
+      {new: true}
+      );
       res.json(result).status(200);
-  }catch(error){
+  }catch(err){
       res.json(err).status(400);
       console.log(err)
   }
